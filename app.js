@@ -42,15 +42,35 @@ function addTodo() {
         completed: false
     };
 
-    console.log('DEBUG: Neues Todo hinzugefügt:', todo);
-
-    // !!! IHRE AUFGABE !!!
     todos.push(todo);
-
-    console.log('DEBUG: Alle Todos:', todos);
-
     saveTodos();
+
     todoInput.value = '';
+    renderTodos();
+}
+
+// ===============================
+// Edit-Funktion (Zusatz)
+// ===============================
+function editTodo(id) {
+    const todo = todos.find(function (t) {
+        return t.id === id;
+    });
+
+    if (!todo) return;
+
+    const newText = prompt('Todo bearbeiten:', todo.text);
+
+    if (newText === null) return;
+
+    const trimmed = newText.trim();
+    if (trimmed === '') {
+        alert('Der Text darf nicht leer sein.');
+        return;
+    }
+
+    todo.text = trimmed;
+    saveTodos();
     renderTodos();
 }
 
@@ -103,6 +123,12 @@ function renderTodo(todo) {
     span.className = 'todo-text';
     span.textContent = todo.text;
 
+    const editBtn = document.createElement('button');
+    editBtn.textContent = '✎';
+    editBtn.addEventListener('click', function () {
+        editTodo(todo.id);
+    });
+
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'X';
     deleteBtn.addEventListener('click', function () {
@@ -111,6 +137,7 @@ function renderTodo(todo) {
 
     li.appendChild(checkbox);
     li.appendChild(span);
+    li.appendChild(editBtn);
     li.appendChild(deleteBtn);
 
     todoList.appendChild(li);
@@ -122,7 +149,6 @@ function renderTodo(todo) {
 function renderTodos() {
     todoList.innerHTML = '';
 
-    // !!! HIER VERVOLLSTÄNDIGEN !!!
     todos.forEach(function (todo) {
         renderTodo(todo);
     });
